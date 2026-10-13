@@ -89,6 +89,10 @@ function applyLanguage() {
         renderJourneys: journeys.renderJourneys,
         updateDateOrder: dates.updateDateOrder
     });
+    
+    if (journeys.getCurrentJourneys().length === 0) {
+        searchStatus.textContent = getText('searchPrompt');
+    }
 }
 
 /* Events */

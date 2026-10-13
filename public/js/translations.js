@@ -19,7 +19,11 @@ export const translations = {
         return: 'Return journeys',
         fare: 'Fare',
         hours: 'h',
-        minutes: 'min'
+        minutes: 'min',
+        oneWay: 'One-way ticket',
+        selectJourney: 'Select journey',
+        searchPrompt: 'Search for journeys to see available trains.',
+        selectOutboundFirst: 'Please select an outbound trip first.'
     },
     'es-MX': {
         tagline: 'Reserva tu próximo viaje en tren.',
@@ -29,10 +33,10 @@ export const translations = {
         date: 'Fecha de viaje',
         searchButton: 'Buscar viajes',
         resultsTitle: 'Viajes disponibles',
-        initialStatus: 'Ingresa tus criterios de búsqueda para encontrar viajes.',
+        initialStatus: 'Ingrese sus criterios de búsqueda para encontrar viajes.',
         loading: 'Buscando viajes...',
-        noResults: 'No se encontraron viajes para tu búsqueda.',
-        error: 'No se pudieron consultar los viajes. Inténtalo de nuevo.',
+        noResults: 'No se encontraron viajes para su búsqueda.',
+        error: 'No se pudieron consultar los viajes. Inténtelo de nuevo.',
         train: 'Tren',
         departure: 'Salida',
         arrival: 'Llegada',
@@ -41,7 +45,11 @@ export const translations = {
         return: 'Viajes de regreso',
         fare: 'Tarifa',
         hours: 'h',
-        minutes: 'min'
+        minutes: 'min',
+        oneWay: 'Viaje sencillo',
+        selectJourney: 'Seleccionar viaje',
+        searchPrompt: 'Ingrese una fecha para ver los trenes disponibles.',
+        selectOutboundFirst: 'Seleccione un viaje de ida para ver los viajes de regreso.'
     }
 };
 
@@ -90,6 +98,8 @@ export function updateLanguage({
         ? 'Ej. Ciudad Juárez'
         : 'e.g. Ciudad Juarez';
 
+    document.querySelector('label[for="one-way"]').textContent = text.oneWay;
+
     searchButton.textContent = text.searchButton;
 
     const journeys = getCurrentJourneys();
@@ -105,6 +115,8 @@ export function updateLanguage({
     } else {
         searchStatus.textContent = text.initialStatus;
     }
+
+    renderJourneys(getCurrentJourneys());
 
     updateDateOrder();
 }

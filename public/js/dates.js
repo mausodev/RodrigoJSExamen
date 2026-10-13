@@ -74,6 +74,16 @@ export function initializeDates({
 
             updateDayOptions(group.month, group.day, group.year);
 
+            // Select today's date by default
+            const today = new Date();
+
+            group.month.value = String(today.getMonth() + 1).padStart(2, '0');
+            group.year.value = String(today.getFullYear());
+
+            updateDayOptions(group.month, group.day, group.year);
+
+            group.day.value = String(today.getDate()).padStart(2, '0');
+
             group.month.addEventListener('change', () => {
                 updateDayOptions(group.month, group.day, group.year);
             });

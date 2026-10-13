@@ -8,7 +8,7 @@ const { poolPromise } = require('../src/database');
 // Search journeys by origin, destination, and travel date
 router.get('/', async (req, res) => {
     try {
-        const { origin, destination, date, returnDate } = req.query;
+        const { origin, destination, date, returnDate, outboundJourneyId } = req.query;
 
         // Validate origin and destination
         if (
@@ -70,11 +70,7 @@ router.get('/', async (req, res) => {
         const pool = await poolPromise;
 
         // Retrieve journeys for one leg of the trip
-        async function findJourneys(
-            journeyOrigin,
-            journeyDestination,
-            journeyDate
-        ) {
+        async function findJourneys(journeyOrigin, journeyDestination, journeyDate, earliestDeparture = null) {
             const request = pool.request();
 
             let query = `
@@ -116,11 +112,18 @@ router.get('/', async (req, res) => {
                 request.input('date', journeyDate);
             }
 
+            if (earliestDeparture) {
+                query += ' AND j.DepartureTime > @earliestDeparture';
+                request.input('earliestDeparture', earliestDeparture);
+            }
+
             query += ' ORDER BY j.DepartureTime';
 
             const result = await request.query(query);
             return result.recordset;
         }
+
+        // One-way search: preserve the existing array response
 
         // One-way search: preserve the existing array response
         const outbound = await findJourneys(origin, destination, date);
@@ -129,17 +132,54 @@ router.get('/', async (req, res) => {
             return res.json(outbound);
         }
 
-        // Return-trip search: reverse the origin and destination
+        // Initial return-trip search: show outbound options first
+        if (outboundJourneyId === undefined) {
+            return res.json({
+                outbound,
+                returnJourneys: []
+            });
+        }
+
+        // Find the selected outbound journey and its arrival time
+        const request = pool.request();
+        request.input('journeyId', outboundJourneyId);
+        request.input('origin', origin);
+        request.input('destination', destination);
+        request.input('date', date);
+
+        const selectedResult = await request.query(`
+            SELECT j.ArrivalTime
+            FROM Journeys AS j
+            INNER JOIN Stations AS origin
+                ON j.OriginStationID = origin.StationID
+            INNER JOIN Stations AS destination
+                ON j.DestinationStationID = destination.StationID
+            WHERE j.JourneyID = @journeyId
+              AND origin.City = @origin
+              AND destination.City = @destination
+              AND j.DepartureTime >= @date
+              AND j.DepartureTime < DATEADD(DAY, 1, @date)
+              AND j.DepartureTime > SYSDATETIME()
+        `);
+
+        if (selectedResult.recordset.length === 0) {
+            return res.status(400).json({
+                message: 'The selected outbound journey is invalid.'
+            });
+        }
+
+        const arrivalTime = selectedResult.recordset[0].ArrivalTime;
+
+        // Find return journeys that depart after the selected journey arrives
         const returnJourneys = await findJourneys(
             destination,
             origin,
-            returnDate
+            returnDate,
+            arrivalTime
         );
 
-        res.json({
-            outbound,
-            returnJourneys
-        });
+        return res.json({ returnJourneys });
+
     } catch (error) {
         console.error('Error retrieving journeys:', error);
 

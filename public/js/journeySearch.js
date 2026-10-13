@@ -1,4 +1,3 @@
-
 export function initializeJourneys(
     {
         originInput,
@@ -21,83 +20,151 @@ export function initializeJourneys(
 ) {
     let currentJourneys = [];
 
+
     function renderJourneys(journeys) {
         journeyResults.replaceChildren();
 
-        // Support both one-way and return-trip API responses
-        const isReturnTrip = !Array.isArray(journeys);
-
-        const journeyGroups = isReturnTrip
-            ? [
-                { title: getText('outbound'), journeys: journeys.outbound },
-                { title: getText('return'), journeys: journeys.returnJourneys }
-            ]
-            : [
-                { title: '', journeys }
-            ];
-
-        const hasResults = journeyGroups.some(
-            group => group.journeys.length > 0
-        );
-
-        if (!hasResults) {
-            searchStatus.dataset.state = 'empty';
-            searchStatus.textContent = getText('noResults');
+        if (Array.isArray(journeys) && journeys.length === 0) {
             return;
         }
 
-        searchStatus.dataset.state = 'results';
-        searchStatus.textContent = '';
+        const isReturnTrip = !Array.isArray(journeys);
 
-        journeyGroups.forEach(group => {
-            if (group.journeys.length === 0) {
+        if (!isReturnTrip) {
+            renderJourneyGroup('', journeys, false);
+            return;
+        }
+
+        renderJourneyGroup(
+            getText('outbound'),
+            journeys.outbound,
+            true
+        );
+
+        if (journeys.returnJourneys !== undefined) {
+            if (
+                journeys.outbound.length > 0 &&
+                journeys.returnJourneys.length === 0
+            ) {
                 const message = document.createElement('p');
-                message.textContent = getText('noResults');
+                message.textContent = getText('selectOutboundFirst');
                 journeyResults.appendChild(message);
-                return;
+            } else {
+                renderJourneyGroup(
+                    getText('return'),
+                    journeys.returnJourneys,
+                    false
+                );
+            }
+        }
+    }
+
+    function renderJourneyGroup(titleText, journeys, selectable) {
+        if (titleText) {
+            const heading = document.createElement('h3');
+            heading.textContent = titleText;
+            journeyResults.appendChild(heading);
+        }
+
+        if (journeys.length === 0) {
+            const message = document.createElement('p');
+            message.textContent = getText('noResults');
+            journeyResults.appendChild(message);
+            return;
+        }
+
+        journeys.forEach(journey => {
+            const card = document.createElement('article');
+            card.className = 'journey-card';
+
+            const title = document.createElement('h4');
+            title.textContent =
+                `${journey.OriginCity} → ${journey.DestinationCity}`;
+
+            const train = document.createElement('p');
+            train.textContent =
+                `${getText('train')}: ${journey.TrainName}`;
+
+            const departure = document.createElement('p');
+            departure.textContent =
+                `${getText('departure')}: ${formatDateTime(journey.DepartureTime)}`;
+
+            const arrival = document.createElement('p');
+            arrival.textContent =
+                `${getText('arrival')}: ${formatDateTime(journey.ArrivalTime)}`;
+
+            const duration = document.createElement('p');
+            duration.textContent =
+                `${getText('duration')}: ${formatDuration(
+                    journey.DepartureTime,
+                    journey.ArrivalTime
+                )}`;
+
+            const fare = document.createElement('p');
+            fare.textContent =
+                `${getText('fare')}: ${formatFare(journey.FareMXN)}`;
+
+            card.append(title, train, departure, arrival, duration, fare);
+
+            if (selectable) {
+                const selectButton = document.createElement('button');
+                selectButton.type = 'button';
+                selectButton.textContent = getText('selectJourney');
+
+                selectButton.addEventListener('click', () => {
+                    searchReturnJourneys(journey);
+                });
+
+                card.appendChild(selectButton);
             }
 
-            if (group.title) {
-                const heading = document.createElement('h3');
-                heading.textContent = group.title;
-                journeyResults.appendChild(heading);
-            }
-
-            group.journeys.forEach(journey => {
-                const card = document.createElement('article');
-                card.className = 'journey-card';
-
-                const title = document.createElement('h4');
-                title.textContent =
-                    `${journey.OriginCity} → ${journey.DestinationCity}`;
-
-                const train = document.createElement('p');
-                train.textContent =
-                    `${getText('train')}: ${journey.TrainName}`;
-
-                const departure = document.createElement('p');
-                departure.textContent =
-                    `${getText('departure')}: ${formatDateTime(journey.DepartureTime)}`;
-
-                const arrival = document.createElement('p');
-                arrival.textContent =
-                    `${getText('arrival')}: ${formatDateTime(journey.ArrivalTime)}`;
-
-                const duration = document.createElement('p');
-                duration.textContent =
-                    `${getText('duration')}: ${formatDuration(
-                        journey.DepartureTime,
-                        journey.ArrivalTime
-                    )}`;
-
-                const fare = document.createElement('p');
-                fare.textContent =
-                    `${getText('fare')}: ${formatFare(journey.FareMXN)}`;
-
-                card.append(title, train, departure, arrival, duration, fare);
-                journeyResults.appendChild(card);
-            });
+            journeyResults.appendChild(card);
         });
+    }
+
+    async function searchReturnJourneys(outboundJourney) {
+        const params = new URLSearchParams();
+
+        params.set('origin', originInput.value.trim());
+        params.set('destination', destinationInput.value.trim());
+        params.set(
+            'date',
+            getSelectedDate(monthSelect, daySelect, yearSelect)
+        );
+        params.set(
+            'returnDate',
+            getSelectedDate(returnMonthSelect, returnDaySelect, returnYearSelect)
+        );
+        params.set('outboundJourneyId', outboundJourney.JourneyID);
+
+        searchStatus.dataset.state = 'loading';
+        searchStatus.textContent = getText('loading');
+
+        try {
+            const response = await fetch(`/api/journeys?${params.toString()}`);
+
+            if (!response.ok) {
+                const errorDetails = await response.text();
+                console.error(
+                    'Return search failed:',
+                    response.status,
+                    errorDetails
+                );
+                throw new Error('Return search failed.');
+            }
+
+            const result = await response.json();
+
+            // Keep the selected outbound journey visible alongside its return options.
+            renderJourneys({
+                outbound: [outboundJourney],
+                returnJourneys: result.returnJourneys
+            });
+        } catch (error) {
+            console.error('Error searching return journeys:', error);
+            searchStatus.dataset.state = 'error';
+            searchStatus.textContent = getText('error');
+        }
     }
 
     function getSelectedDate(monthSelect, daySelect, yearSelect) {
@@ -133,7 +200,6 @@ export function initializeJourneys(
     }
 
     async function searchJourneys() {
-        console.log('searchJourneys() called');
         const params = new URLSearchParams();
 
         if (originInput.value.trim()) {
