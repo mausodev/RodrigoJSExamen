@@ -1,23 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketTren</title>
+    <title>TicketTren | Train Booking</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="app.js" defer></script>
+    <script type="module" src="/js/main.js"></script>
 </head>
+
 <body>
     <header>
-        <h1>Welcome</h1>
-        <p>...</p>
+        <h1>TicketTren</h1>
+        <p>Book your next train journey.</p>
+        <div class="language-selector">
+            <label for="language-select">Language / Idioma</label>
+            <select id="language-select">
+                <option value="en-US">English</option>
+                <option value="es-MX">Español</option>
+            </select>
+        </div>
+
     </header>
 
     <main>
         <section>
-            <h2>Backend Connection Test</h2>
-            <p id="api-status">Checking connection...</p>
+            <h2>Find a Journey</h2>
+            <form id="search-form" style="margin-bottom: 1em;">
+                <label for="origin">Origin city</label>
+                <input type="text" id="origin" name="origin" placeholder="e.g. Chihuahua">
+
+                <label for="destination">Destination city</label>
+                <input type="text" id="destination" name="destination" placeholder="e.g. Ciudad Juarez">
+
+                <div class="trip-options" style="margin-top: 0.5em;">
+                    <label for="one-way">One-way trip</label>
+                    <input type="checkbox" id="one-way" checked>
+                </div>
+
+                <fieldset class="date-field" id="departure-date-selector">
+                    <legend>Departure date</legend>
+                    <div class="date-selectors" id="departure-date">
+                        <select id="departure-month" aria-label="Departure month">
+                            <option value="">MM</option>
+                        </select>
+                        <span>/</span>
+                        <select id="departure-day" aria-label="Departure day">
+                            <option value="">DD</option>
+                        </select>
+                        <span>/</span>
+                        <select id="departure-year" aria-label="Departure year">
+                            <option value="">YYYY</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset class="date-field" id="return-date-selector" hidden>
+                    <legend>Return date</legend>
+                    <div class="date-selectors" id="return-date">
+                        <select id="return-month" aria-label="Return month">
+                            <option value="">MM</option>
+                        </select>
+                        <span>/</span>
+                        <select id="return-day" aria-label="Return day">
+                            <option value="">DD</option>
+                        </select>
+                        <span>/</span>
+                        <select id="return-year" aria-label="Return year">
+                            <option value="">YYYY</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </form>
+            <button type="submit" form="search-form">Search journeys</button>
+        </section>
+
+        <section>
+            <h2>Available Journeys</h2>
+            <p id="search-status">Enter your search criteria to find journeys.</p>
+            <div id="journey-results"></div>
         </section>
     </main>
 </body>
+
 </html>

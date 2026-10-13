@@ -1,9 +1,14 @@
 
 const express = require('express');
 const path = require('path');
+const { poolPromise } = require('./database');
+const journeysRouter = require('../routes/journeys');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Register the train journeys routes under /api/journeys
+app.use('/api/journeys', journeysRouter);
 
 // Parse incoming JSON requests
 app.use(express.json());
@@ -12,11 +17,20 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Test endpoint
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'OK',
-        message: 'Internal API is running'
-    });
+app.get('/api/health', async (req, res) => {
+    try {
+        await poolPromise;
+
+        res.json({
+            status: 'ok',
+            message: 'Server and database connected'
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Database connection failed'
+        });
+    }
 });
 
 app.listen(PORT, () => {

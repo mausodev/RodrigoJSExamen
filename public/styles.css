@@ -46,7 +46,6 @@ body {
 
 
 /* Header */
-
 header {
     position: relative;
     overflow: hidden;
@@ -58,7 +57,6 @@ header {
 }
 
 /* Amber editorial accent */
-
 header::before {
     content: "";
     position: absolute;
@@ -88,14 +86,12 @@ header p {
 }
 
 /* Main content */
-
 main {
     width: min(100% - 40px, 1000px);
     margin: 42px auto;
 }
 
 /* Content sections */
-
 section {
     margin-bottom: 26px;
     padding: 30px;
@@ -116,22 +112,10 @@ section h2 {
     letter-spacing: -0.3px;
 }
 
-/* API connection status */
-
-#api-status {
-    margin: 0;
-    padding: 14px 16px;
-    background: var(--color-success-bg);
-    border-left: 3px solid #66865e;
-    border-radius: var(--radius-small);
-    color: var(--color-success-text);
-    font-size: 0.95rem;
-}
-
 /* Buttons */
-
 button {
     padding: 12px 21px;
+    margin-top: 8px;
     background: var(--color-accent);
     border: 1px solid var(--color-accent);
     border-radius: var(--radius-small);
@@ -157,12 +141,12 @@ button:focus-visible {
 }
 
 /* Form controls */
-
 input,
 select,
 textarea {
     width: 100%;
     padding: 12px 14px;
+    margin-bottom: 0px;
     background: #fffefa;
     border: 1px solid #d7d1c5;
     border-radius: var(--radius-small);
@@ -191,13 +175,11 @@ label {
 }
 
 /* General accessibility */
-
 :focus-visible {
     outline-color: var(--color-accent);
 }
 
 /* Balanced responsive layout */
-
 @media (max-width: 600px) {
     header {
         padding: 34px 18px 30px;
@@ -223,7 +205,6 @@ label {
 }
 
 /* Reduced motion accessibility */
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -235,4 +216,88 @@ label {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
     }
+}
+
+/* Language selector */
+.language-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.language-selector label {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+}
+
+.language-selector select {
+    width: auto;
+    min-width: 130px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font: inherit;
+}
+
+.date-selectors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.date-selectors select {
+    flex: none;
+    width: 76px;
+    padding: 10px 6px;
+    text-align: center;
+}
+
+#departure-year,
+#return-year {
+    width: 90px;
+}
+
+
+.trip-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.trip-options label {
+    display: inline;
+    margin: 0;
+}
+
+.trip-options input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    accent-color: var(--color-accent);
+}
+
+.date-field {
+    border: none;
+    padding: 0;
+    margin: 0 0 16px;
+    min-width: 0;
+}
+
+.date-field > label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.date-field legend {
+    padding: 0;
+    margin-bottom: 8px;
+}
+
+.date-field [hidden] {
+    display: none;
 }
