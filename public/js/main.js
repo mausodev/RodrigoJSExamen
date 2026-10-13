@@ -3,7 +3,7 @@ import { translations, updateLanguage } from './translations.js';
 
 import { initializeDates, formatDateTime, formatFare, formatDuration } from './dates.js';
 
-import { initializeJourneys } from './journeys.js';
+import { initializeJourneys } from './journeySearch.js';
 
 /* Language */
 const languageSelect = document.getElementById('language-select');

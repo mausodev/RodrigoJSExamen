@@ -15,6 +15,8 @@ export const translations = {
         departure: 'Departure',
         arrival: 'Arrival',
         duration: 'Duration',
+        outbound: 'Outbound journeys',
+        return: 'Return journeys',
         fare: 'Fare',
         hours: 'h',
         minutes: 'min'
@@ -35,6 +37,8 @@ export const translations = {
         departure: 'Salida',
         arrival: 'Llegada',
         duration: 'Duración',
+        outbound: 'Viajes de ida',
+        return: 'Viajes de regreso',
         fare: 'Tarifa',
         hours: 'h',
         minutes: 'min'

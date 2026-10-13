@@ -24,7 +24,23 @@ export function initializeJourneys(
     function renderJourneys(journeys) {
         journeyResults.replaceChildren();
 
-        if (journeys.length === 0) {
+        // Support both one-way and return-trip API responses
+        const isReturnTrip = !Array.isArray(journeys);
+
+        const journeyGroups = isReturnTrip
+            ? [
+                { title: getText('outbound'), journeys: journeys.outbound },
+                { title: getText('return'), journeys: journeys.returnJourneys }
+            ]
+            : [
+                { title: '', journeys }
+            ];
+
+        const hasResults = journeyGroups.some(
+            group => group.journeys.length > 0
+        );
+
+        if (!hasResults) {
             searchStatus.dataset.state = 'empty';
             searchStatus.textContent = getText('noResults');
             return;
@@ -33,38 +49,54 @@ export function initializeJourneys(
         searchStatus.dataset.state = 'results';
         searchStatus.textContent = '';
 
-        journeys.forEach(journey => {
-            const card = document.createElement('article');
-            card.className = 'journey-card';
+        journeyGroups.forEach(group => {
+            if (group.journeys.length === 0) {
+                const message = document.createElement('p');
+                message.textContent = getText('noResults');
+                journeyResults.appendChild(message);
+                return;
+            }
 
-            const title = document.createElement('h3');
-            title.textContent =
-                `${journey.OriginCity} → ${journey.DestinationCity}`;
+            if (group.title) {
+                const heading = document.createElement('h3');
+                heading.textContent = group.title;
+                journeyResults.appendChild(heading);
+            }
 
-            const train = document.createElement('p');
-            train.textContent = `${getText('train')}: ${journey.TrainName}`;
+            group.journeys.forEach(journey => {
+                const card = document.createElement('article');
+                card.className = 'journey-card';
 
-            const departure = document.createElement('p');
-            departure.textContent =
-                `${getText('departure')}: ${formatDateTime(journey.DepartureTime)}`;
+                const title = document.createElement('h4');
+                title.textContent =
+                    `${journey.OriginCity} → ${journey.DestinationCity}`;
 
-            const arrival = document.createElement('p');
-            arrival.textContent =
-                `${getText('arrival')}: ${formatDateTime(journey.ArrivalTime)}`;
+                const train = document.createElement('p');
+                train.textContent =
+                    `${getText('train')}: ${journey.TrainName}`;
 
-            const duration = document.createElement('p');
-            duration.textContent =
-                `${getText('duration')}: ${formatDuration(
-                    journey.DepartureTime,
-                    journey.ArrivalTime
-                )}`;
+                const departure = document.createElement('p');
+                departure.textContent =
+                    `${getText('departure')}: ${formatDateTime(journey.DepartureTime)}`;
 
-            const fare = document.createElement('p');
-            fare.textContent =
-                `${getText('fare')}: ${formatFare(journey.FareMXN)}`;
+                const arrival = document.createElement('p');
+                arrival.textContent =
+                    `${getText('arrival')}: ${formatDateTime(journey.ArrivalTime)}`;
 
-            card.append(title, train, departure, arrival, duration, fare);
-            journeyResults.appendChild(card);
+                const duration = document.createElement('p');
+                duration.textContent =
+                    `${getText('duration')}: ${formatDuration(
+                        journey.DepartureTime,
+                        journey.ArrivalTime
+                    )}`;
+
+                const fare = document.createElement('p');
+                fare.textContent =
+                    `${getText('fare')}: ${formatFare(journey.FareMXN)}`;
+
+                card.append(title, train, departure, arrival, duration, fare);
+                journeyResults.appendChild(card);
+            });
         });
     }
 
@@ -125,7 +157,7 @@ export function initializeJourneys(
 
         if (departureDate) {
             params.set('date', departureDate);
-        } 
+        }
         else if (monthSelect.value || daySelect.value || yearSelect.value) {
             searchStatus.dataset.state = 'error';
             searchStatus.textContent = languageSelect.value === 'es-MX'
@@ -143,7 +175,7 @@ export function initializeJourneys(
                 return;
             }
 
-            if (returnDate <= departureDate) {
+            if (returnDate < departureDate) {
                 searchStatus.dataset.state = 'error';
                 searchStatus.textContent = languageSelect.value === 'es-MX'
                     ? 'La fecha de regreso debe ser posterior a la salida.'
@@ -165,6 +197,8 @@ export function initializeJourneys(
             );
 
             if (!response.ok) {
+                const errorDetails = await response.text();
+                console.error('Journey search failed:', response.status, errorDetails);
                 throw new Error('Journey search failed.');
             }
 
