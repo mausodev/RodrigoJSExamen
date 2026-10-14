@@ -1,3 +1,5 @@
+import { showAvailableSeats } from './seatSelection.js';
+
 export function initializeJourneys(
     {
         originInput,
@@ -31,7 +33,7 @@ export function initializeJourneys(
         const isReturnTrip = !Array.isArray(journeys);
 
         if (!isReturnTrip) {
-            renderJourneyGroup('', journeys, false);
+            renderJourneyGroup('', journeys, true);
             return;
         }
 
@@ -112,7 +114,11 @@ export function initializeJourneys(
                 selectButton.textContent = getText('selectJourney');
 
                 selectButton.addEventListener('click', () => {
-                    searchReturnJourneys(journey);
+                    showAvailableSeats(journey, card, getText);
+
+                    if (!oneWayCheckbox.checked) {
+                        searchReturnJourneys(journey);
+                    }
                 });
 
                 card.appendChild(selectButton);

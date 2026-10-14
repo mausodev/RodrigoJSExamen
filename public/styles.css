@@ -243,6 +243,20 @@ label {
     font: inherit;
 }
 
+.city-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 320px;
+    min-width: 0;
+    margin-bottom: 16px;
+}
+
+.city-selector select {
+    width: 100%;
+}
+
 .date-selectors {
     display: flex;
     align-items: center;
@@ -261,7 +275,6 @@ label {
 #return-year {
     width: 90px;
 }
-
 
 .trip-options {
     display: flex;

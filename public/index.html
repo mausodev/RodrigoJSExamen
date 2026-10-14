@@ -27,11 +27,18 @@
         <section>
             <h2>Find a Journey</h2>
             <form id="search-form" style="margin-bottom: 1em;">
-                <label for="origin">Origin city</label>
-                <input type="text" id="origin" name="origin" placeholder="e.g. Chihuahua">
-
-                <label for="destination">Destination city</label>
-                <input type="text" id="destination" name="destination" placeholder="e.g. Ciudad Juarez">
+                <div class="city-selector">
+                    <label for="origin">Origin city</label>
+                    <select id="origin" name="origin" required>
+                        <option value="">Select an origin city</option>
+                    </select>
+                </div>
+                <div class="city-selector">
+                    <label for="destination">Destination city</label>
+                    <select id="destination" name="destination" required>
+                        <option value="">Select a destination city</option>
+                    </select>
+                </div>
 
                 <div class="trip-options" style="margin-top: 0.5em;">
                     <label for="one-way">One-way trip</label>

@@ -3,12 +3,16 @@ const express = require('express');
 const path = require('path');
 const { poolPromise } = require('./database');
 const journeysRouter = require('../routes/journeys');
+const ticketsRouter = require('../routes/tickets');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Register the train journeys routes under /api/journeys
 app.use('/api/journeys', journeysRouter);
+
+// Register the ticket routes under /api/tickets
+app.use('/api/tickets', ticketsRouter);
 
 // Parse incoming JSON requests
 app.use(express.json());

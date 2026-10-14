@@ -21,9 +21,11 @@ export const translations = {
         hours: 'h',
         minutes: 'min',
         oneWay: 'One-way ticket',
-        selectJourney: 'Select journey',
+        selectJourney: 'View available seats',
         searchPrompt: 'Search for journeys to see available trains.',
-        selectOutboundFirst: 'Please select an outbound trip first.'
+        selectOutboundFirst: 'Please select an outbound trip first.',
+        originPlaceholder: 'Select an origin city',
+        destinationPlaceholder: 'Select a destination city'
     },
     'es-MX': {
         tagline: 'Reserva tu próximo viaje en tren.',
@@ -47,9 +49,11 @@ export const translations = {
         hours: 'h',
         minutes: 'min',
         oneWay: 'Viaje sencillo',
-        selectJourney: 'Seleccionar viaje',
+        selectJourney: 'Ver asientos disponibles',
         searchPrompt: 'Ingrese una fecha para ver los trenes disponibles.',
-        selectOutboundFirst: 'Seleccione un viaje de ida para ver los viajes de regreso.'
+        selectOutboundFirst: 'Seleccione un viaje de ida para ver los viajes de regreso.',
+        originPlaceholder: 'Seleccione una ciudad de origen',
+        destinationPlaceholder: 'Seleccione una ciudad de destino'
     }
 };
 

@@ -4,6 +4,28 @@ const router = express.Router();
 
 const { poolPromise } = require('../src/database');
 
+// GET /api/journeys/cities
+// Retrieve available cities for the origin and destination dropdowns
+router.get('/cities', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+
+        const result = await pool.request().query(`
+            SELECT DISTINCT City
+            FROM Stations
+            ORDER BY City
+        `);
+
+        res.json(result.recordset.map(row => row.City));
+    } catch (error) {
+        console.error('Error retrieving cities:', error);
+
+        res.status(500).json({
+            message: 'Could not retrieve available cities.'
+        });
+    }
+});
+
 // GET /api/journeys
 // Search journeys by origin, destination, and travel date
 router.get('/', async (req, res) => {
