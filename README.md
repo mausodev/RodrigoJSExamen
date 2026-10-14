@@ -2,7 +2,7 @@
 
 ## Autor
 - **Nombre:** Rodrigo Benavides Grajeda
-- **Fecha:** 14/10/2026
+- **Fecha:** 12/10/2026 - 14/10/2026
 
 ## Descripción del proyecto
 
