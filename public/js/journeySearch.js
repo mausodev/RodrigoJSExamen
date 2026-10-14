@@ -33,7 +33,7 @@ export function initializeJourneys(
         const isReturnTrip = !Array.isArray(journeys);
 
         if (!isReturnTrip) {
-            renderJourneyGroup('', journeys, true);
+            renderJourneyGroup('', journeys, true, false);
             return;
         }
 
@@ -55,13 +55,14 @@ export function initializeJourneys(
                 renderJourneyGroup(
                     getText('return'),
                     journeys.returnJourneys,
-                    false
+                    true,
+                    true
                 );
             }
         }
     }
 
-    function renderJourneyGroup(titleText, journeys, selectable) {
+    function renderJourneyGroup(titleText, journeys, selectable, isReturn = false) {
         if (titleText) {
             const heading = document.createElement('h3');
             heading.textContent = titleText;
@@ -111,9 +112,22 @@ export function initializeJourneys(
             if (selectable) {
                 const selectButton = document.createElement('button');
                 selectButton.type = 'button';
-                selectButton.textContent = getText('selectJourney');
+                selectButton.textContent = isReturn
+                    ? getText('viewSeats')
+                    : getText('selectJourney');
+
+                console.log({
+                    isReturn,
+                    label: selectButton.textContent,
+                    journey: `${journey.OriginCity} → ${journey.DestinationCity}`
+                });
 
                 selectButton.addEventListener('click', () => {
+                    if (isReturn) {
+                        showAvailableSeats(journey, card, getText);
+                        return;
+                    }
+
                     showAvailableSeats(journey, card, getText);
 
                     if (!oneWayCheckbox.checked) {

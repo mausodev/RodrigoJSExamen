@@ -1,8 +1,7 @@
 import { translations, updateLanguage } from './translations.js';
-
 import { initializeDates, formatDateTime, formatFare, formatDuration } from './dates.js';
-
 import { initializeJourneys } from './journeySearch.js';
+import { initializeTicketCancellation } from './cancellation.js';
 
 /* Language */
 const languageSelect = document.getElementById('language-select');
@@ -144,6 +143,8 @@ const journeys = initializeJourneys({
     formatDuration: (departure, arrival) =>
         formatDuration(departure, arrival, getText)
 });
+
+initializeTicketCancellation();
 
 /* Update all translated page content */
 function applyLanguage() {

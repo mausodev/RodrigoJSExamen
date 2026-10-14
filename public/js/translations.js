@@ -21,11 +21,42 @@ export const translations = {
         hours: 'h',
         minutes: 'min',
         oneWay: 'One-way ticket',
-        selectJourney: 'View available seats',
+        selectJourney: 'Select this trip',
+        viewSeats: 'View available seats',
         searchPrompt: 'Search for journeys to see available trains.',
         selectOutboundFirst: 'Please select an outbound trip first.',
         originPlaceholder: 'Select an origin city',
-        destinationPlaceholder: 'Select a destination city'
+        destinationPlaceholder: 'Select a destination city',
+        passengerDetails: 'Passenger details',
+        passengerName: 'Full name',
+        passengerEmail: 'Email address',
+        bookTicket: 'Book ticket',
+        bookingInProgress: 'Processing booking...',
+        bookingSuccess: 'Booking confirmed!',
+        bookingReference: 'Booking reference',
+        bookingError: 'Could not complete booking.',
+        total: 'Total',
+        approxUSD: 'Approx. in USD',
+        conversionUnavailable: 'Currency conversion service unavailable',
+        reviewTicket: 'Review ticket',
+        reviewTicketDescription: 'Enter your ticket ID and booking reference to review your reservation.',
+        ticketId: 'Ticket ID',
+        passenger: 'Passenger',
+        from: 'From',
+        to: 'To',
+        seat: 'Seat',
+        farePaid: 'Fare paid',
+        status: 'Status',
+        cancelTicket: 'Cancel ticket',
+        reviewingTicket: 'Reviewing ticket...',
+        reviewTicketPrompt: 'Please review the details before cancelling.',
+        ticketAlreadyCancelled: 'This ticket has already been cancelled.',
+        ticketCancelled: 'Ticket cancelled successfully.',
+        confirmCancellation: 'Are you sure you want to cancel this ticket?',
+        ticketNotFound: 'Ticket not found. Check your details.',
+        ticketReviewError: 'Could not retrieve ticket details.',
+        ticketCancellationError: 'Could not cancel ticket.',
+        cancellingTicket: 'Cancelling ticket...'
     },
     'es-MX': {
         tagline: 'Reserva tu próximo viaje en tren.',
@@ -49,11 +80,42 @@ export const translations = {
         hours: 'h',
         minutes: 'min',
         oneWay: 'Viaje sencillo',
-        selectJourney: 'Ver asientos disponibles',
+        selectJourney: 'Seleccionar este viaje',
+        viewSeats: 'Ver asientos disponibles',
         searchPrompt: 'Ingrese una fecha para ver los trenes disponibles.',
         selectOutboundFirst: 'Seleccione un viaje de ida para ver los viajes de regreso.',
         originPlaceholder: 'Seleccione una ciudad de origen',
-        destinationPlaceholder: 'Seleccione una ciudad de destino'
+        destinationPlaceholder: 'Seleccione una ciudad de destino',
+        passengerDetails: 'Datos del pasajero',
+        passengerName: 'Nombre completo',
+        passengerEmail: 'Correo electrónico',
+        bookTicket: 'Reservar boleto',
+        bookingInProgress: 'Procesando reservación...',
+        bookingSuccess: '¡Reservación confirmada!',
+        bookingReference: 'Referencia de reservación',
+        bookingError: 'No se pudo completar la reservación.',
+        total: 'Total',
+        approxUSD: 'Aprox. en USD',
+        conversionUnavailable: 'Servicio de conversión a USD no disponible',
+        reviewTicket: 'Consultar boleto',
+        reviewTicketDescription: 'Ingrese su ID de boleto y referencia de reservación para consultar su boleto.',
+        ticketId: 'ID de boleto',
+        passenger: 'Pasajero',
+        from: 'Origen',
+        to: 'Destino',
+        seat: 'Asiento',
+        farePaid: 'Tarifa pagada',
+        status: 'Estado',
+        cancelTicket: 'Cancelar boleto',
+        reviewingTicket: 'Consultando boleto...',
+        reviewTicketPrompt: 'Revise los datos antes de cancelar.',
+        ticketAlreadyCancelled: 'Este boleto ya ha sido cancelado.',
+        ticketCancelled: 'Boleto cancelado correctamente.',
+        confirmCancellation: '¿Está seguro de que desea cancelar este boleto?',
+        ticketNotFound: 'No se encontró el boleto. Verifique los datos.',
+        ticketReviewError: 'No se pudieron consultar los datos del boleto.',
+        ticketCancellationError: 'No se pudo cancelar el boleto.',
+        cancellingTicket: 'Cancelando boleto...'
     }
 };
 
@@ -121,6 +183,17 @@ export function updateLanguage({
     }
 
     renderJourneys(getCurrentJourneys());
+
+    // Ticket review and cancellation
+    const ticketSection = document.querySelector('.cancel-ticket-section');
+
+    ticketSection.querySelector('h2').textContent = text.reviewTicket;
+    ticketSection.querySelector('p').textContent = text.reviewTicketDescription;
+
+    ticketSection.querySelector('label[for="cancel-ticket-id"]').textContent = text.ticketId;
+    ticketSection.querySelector('label[for="cancel-booking-reference"]').textContent = text.bookingReference;
+    ticketSection.querySelector('#cancel-ticket-form button').textContent = text.reviewTicket;
+    ticketSection.querySelector('#cancel-ticket-button').textContent = text.cancelTicket;
 
     updateDateOrder();
 }

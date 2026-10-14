@@ -87,6 +87,26 @@
             <p id="search-status">Enter your search criteria to find journeys.</p>
             <div id="journey-results"></div>
         </section>
+
+        <section class="cancel-ticket-section">
+            <h2>Review ticket</h2>
+            <p>Enter your ticket ID and booking reference to review your reservation.</p>
+
+            <form id="cancel-ticket-form">
+                <label for="cancel-ticket-id">Ticket ID</label>
+                <input id="cancel-ticket-id" name="ticketId" type="number" min="1" step="1" required>
+
+                <label for="cancel-booking-reference">Booking reference</label>
+                <input id="cancel-booking-reference" name="bookingReference" type="text" maxlength="11" required>
+
+                <button type="submit">Review ticket</button>
+            </form>
+
+            <div id="ticket-review-details" hidden></div>
+            <button id="cancel-ticket-button" type="button" hidden>Cancel ticket</button>
+            <p id="cancel-ticket-message" role="status"></p>
+        </section>
+
     </main>
 </body>
 
